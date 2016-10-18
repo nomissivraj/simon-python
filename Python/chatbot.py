@@ -61,3 +61,15 @@ def posOrNeg(checkInput, posList, negList):
 greeting_response = raw_input(random_question +" ")
 posOrNeg(greeting_response, pos_responses, neg_responses)
 
+# ask why then work in further respons to cheer up if negative, tell joke, show picture, offer figurative hug?
+#sort out if not_something combination -- = + etc
+
+#tell me about yourself, ask questions about appearance, then eventually hobbies - set responses + wikipedia?
+
+#step of conversation
+#do a word game here?
+
+
+
+
+
