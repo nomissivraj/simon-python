@@ -1,3 +1,4 @@
+from graphics import *
 
 window = GraphWin("Visualisation", 300, 300)
 ball = Circle(Point(100,300), 20)
