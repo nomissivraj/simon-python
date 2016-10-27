@@ -82,7 +82,6 @@ else:
     background1.draw(window)
        
     while True:
-        global allThePlanes
         for planes in range(len(data_num)):
             grade = int(data_num[planes])
 
@@ -94,22 +93,18 @@ else:
                 which_plane = 1
             else:
                 which_plane = 0
-
-            #print(planes)
+                
+            text = Text(Point(400,20),"Grade: " + data_num[planes])
+            text.setFace('helvetica')
+            text.setSize(20)
+            text.setFill(color_rgb(255,255,255))
+            text.setStyle('bold')
+            text.draw(window)
+            
             plane = Image(Point(random.randrange(60,740), 550 -grade * 5 ), "plane"+str(which_plane)+".gif")
             plane.draw(window)
-            #print(allThePlanes)
             time.sleep(0.5)# sleep between each plane
             background = Image(Point(400,250), "background.gif")
             background.draw(window)
-            #rectangle = Rectangle(Point(0,0), Point(800,500))
-            #rectangle.setFill(color_rgb(230,230,230))
-            #rectangle.draw(window)
-            
-        allThePlanes.append(plane)
+
         time.sleep(0.1)
-            
-            #vertices = [50, 75, 100]
-            #shape1 = Polygon(Point(50,50), Point(10,200), Point(100,100))
-            #shape1.setFill(color_rgb(0,255,0))
-            #shape1.draw(window)
