@@ -8,7 +8,7 @@ while(True):
         if(chr(input[0]) == '1'): light = 9
         else: light = 0
         microbit.display.on()
-        #this lot flashes a heart
+        #Displays Heart when recieving message ON
         microbit.display.set_pixel(1,0,light)
         microbit.display.set_pixel(3,0,light)
         microbit.display.set_pixel(0,1,light)
@@ -20,7 +20,7 @@ while(True):
         microbit.display.set_pixel(3,3,light)
         microbit.display.set_pixel(2,4,light)
     
-        #this lot flashes all LEDs
+        #for all LEDs on
         #microbit.display.set_pixel(0,0,light)
         #microbit.display.set_pixel(0,1,light)
         #microbit.display.set_pixel(0,2,light)
