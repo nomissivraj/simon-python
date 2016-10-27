@@ -1,4 +1,5 @@
 #visualisation using external values
+#I HAVE INCLUDED VIDEO IN GITHUB REPOS PROVING PC ANIMATION WORKS
 #for mac run visualisation 1 by pressing '1' key on keyboard
 '''On a good PC press '2' key on keyboard for second visualisation.
 Is slow on macs but perfect on decent PC
@@ -8,9 +9,9 @@ bigger/higher grades have higher chance of being faster'''
 from graphics import *
 import time
 import random
-
+new_color = color_rgb(220,50,255)
 allTheBalls = []
-allThePlanes = []
+
 
 with open("data.txt", "r") as data:
     #Get all words numbers (as strings) from data, store in data_num variable as a list
@@ -37,13 +38,29 @@ if (user_choice == '2'):
         ball.setOutline("purple")
         ball.draw(window)
         allTheBalls.append(ball)
+        #pass in colors control with animate_item
 
-    def animate_item(b):
+    def animate_item(b, color):
         currentPosition = b.getCenter()
-        if(currentPosition.getX() <= 0.0 ): b.xspeed = -b.xspeed
-        if(currentPosition.getX() >= 800.0 ): b.xspeed = -b.xspeed
-        if(currentPosition.getY() <= 0.0 ): b.yspeed = -b.yspeed
-        if(currentPosition.getY() >= 500.0 ): b.yspeed = -b.yspeed
+        if(currentPosition.getX() <= 0.0 ):
+            b.xspeed = -b.xspeed
+            color = color_rgb(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+            b.setFill(color)
+            
+        if(currentPosition.getX() >= 800.0 ):
+            b.xspeed = -b.xspeed
+            color = color_rgb(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+            b.setFill(color)
+            
+        if(currentPosition.getY() <= 0.0 ):
+            b.yspeed = -b.yspeed
+            color = color_rgb(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+            b.setFill(color)
+            
+        if(currentPosition.getY() >= 500.0 ):
+            b.yspeed = -b.yspeed
+            color = color_rgb(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+            b.setFill(color)
         b.move(b.xspeed,b.yspeed)
 
     for i in range(len(data_num)):
@@ -55,7 +72,7 @@ if (user_choice == '2'):
         
     while True:
         for i in allTheBalls:
-            animate_item(i)
+            animate_item(i, new_color)
 
 else:
     print("You chose the Mac visualisation")
@@ -78,7 +95,7 @@ else:
             else:
                 which_plane = 0
 
-            print(planes)
+            #print(planes)
             plane = Image(Point(random.randrange(60,740), 550 -grade * 5 ), "plane"+str(which_plane)+".gif")
             plane.draw(window)
             #print(allThePlanes)
