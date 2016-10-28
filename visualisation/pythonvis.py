@@ -1,5 +1,5 @@
 #visualisation using external values
-#I HAVE INCLUDED VIDEO IN GITHUB REPOS PROVING PC ANIMATION WORKS
+#I HAVE INCLUDED VIDEO IN GITHUB REPOS (pcVis.mp4) PROVING PC ANIMATION WORKS
 #for mac run visualisation 1 by pressing '1' key on keyboard
 '''On a good PC press '2' key on keyboard for second visualisation.
 Is slow on macs but perfect on decent PC
