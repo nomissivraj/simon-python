@@ -16,12 +16,12 @@ while True:
     getTableInfo.execute("SELECT urls.title FROM urls")
     rows = getTableInfo.fetchall()
 
-    recent = []
+    allHistory = []
 
     for row in rows:
-        recent.append(row)
+        allHistory.append(row)
 
-    getLast = str(recent[-1])
+    getLast = str(allHistory[-1])
     lastTitle = getLast[3:-3]
     console.close()
 
