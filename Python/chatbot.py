@@ -136,8 +136,6 @@ while True:
     except:
         parse = "html.parser"
         userSubject = wikipedia.summary(userSearch[0], sentences=1)
-        
-    print(parse)
     
     print("do you mean? : ")
     print(bot + userSubject)
