@@ -1,22 +1,20 @@
 #Chat Bot
 '''features:
-
+    
 '''
 
 #Import libraries 
-import random
-import wikipedia
-import time
-import webbrowser
+import random, wikipedia, time, webbrowser, sys
 
 ####LOAD STUFF
 #Access stopwords.txt file and read it as stopDoc variable
 with open("stopwords.txt", "r") as stopDoc:
-    #Get all words from stopDoc, stripping out the new lines? store in stop_words variable... now is a list
+    #Get all words from stopDoc, seperated by new lines and append to stop_words list
     stop_words = stopDoc.read().split("\n")
     stop_words.append("name")
     stopDoc.close()
 
+#Access external resource image links
 with open("cuteness.txt", "r") as cutestuff:
     cuteness = cutestuff.read().split("\n")
     cutestuff.close()
@@ -26,17 +24,20 @@ with open("cuteness.txt", "r") as cutestuff:
 greetings = ["hello", "hey", "sup", "greetings"]
 #create list of possible questions to follow greetings or responses
 questions = ["how are you doing?", "having a good day?", "how's it going?", "how're you feeling?"]
+#list of games
+games = ["rock paper scissors", " other game"]
+gameString = ','.join(games)
 #every loop put a new random choice from greetings list into random_greeting variable to be used later
-pos_responses = ["good", "great", "fantastic", "brilliant", "ok", "amazing", "yes", "yep", "yeah"]
+generic_responses = ["Ah yes, I too enjoy that", "I've always loved that", "Oh :/ i'm not really a fan of that", "eurgh boring"]
+pos_responses = ["good", "great", "fantastic", "brilliant", "ok", "amazing", "yes", "yep", "yeah", "well"]
 neg_responses = ["bad", "shit", "awful", "abysmal", "sick", "unwell", "bored", "poop", "nope", "no", "nah"]
 pos_answer = ["that's good", "i'm glad", "I'm glad to hear it", "awesome! :D"]
 neg_answer = ["i'm sorry to hear that", "oh no :(", "oh no :( hope you feel better soon", "HAHAHAHAA", "that's awful"]
+rps_answers = ["rock", "paper", "scissors"]
 random_cuteness = random.choice(cuteness)#gets choice from list created in load stuff section - cuteness.txt
 random_pos_answer = random.choice(pos_answer)
 random_neg_answer = random.choice(neg_answer)
-
-
-
+random_response = random.choice(generic_responses)
 
 ####DEFINE VARIABLES 
 random_greeting = random.choice(greetings)
@@ -46,8 +47,29 @@ global flip
 flip = False
 global user_feels
 global get_last
+global response
+global greeting_response
+global parse
+parse = None
+global wiki_index
+wiki_index = 1
+global rps_tie
+rps_tie = False
+global skip_game
+skip_game = False
+user_hobbies = []
+
 
 ####MAKE FUNCTIONS TO HANDLE CONVERSATION ELEMENTS
+def botLine(string, greeting):
+    global response, greeting_response
+    print(bot + string)
+    response = raw_input(" ")
+    
+    if greeting == True:
+        greeting_response = response
+    
+
 def processInput(input, output, useName):
     response = input.split(" ")
     #loop through user response words
@@ -89,61 +111,180 @@ def posOrNeg(checkInput, posList, negList):
                 checkInput = raw_input(" ")
             time.sleep(1)
             
-def checkYesNo(checkInput, pos, neg):
+def moreWiki():
+    cont_subject = wikipedia.summary(userSearch, sentences=4)
+    print(bot + "here's more about that")
+    print(cont_subject)
+
+def contOrStop(checkInput, pos, neg):
     response = checkInput.split(" ")
     for word in response:
         if word.lower() in pos:
-            cont_subject = wikipedia.summary(userSearch, sentences=4)
-            print(bot + "here's more about that")
-            print(cont_subject)
+            return
         elif word.lower() in neg:
-            print('whoops, try something else')
+            print('Ok, I enjoyed speaking to you. Goodbye and enjoy your ' +random_hobby + ' :)')
+            time.sleep(3)
+            quit()
 
-####BEGIN PROGRAM/CONVERSATION
+#Check respons to if subject is correct - could be used for something else
+def checkYesNo(checkInput, pos, neg, chosenFunction, game):
+    global wiki_index, skip_game
+    response = checkInput.split(" ")
+    for word in response:
+        if word.lower() in pos:
+            chosenFunction()
+            return
+        elif word.lower() in neg:
+            #if this is being called within a game
+            if game == True:
+                skip_game = True
+            print("Ok then")
 
-#get user first input and respond
-print(bot +"Hello I am STUPIDBOT, what is your name? ")
-response = raw_input(" ")
+#Function that does nothing
+def nofunction():
+    return
+
+###Games ---------
+
+##Rock Paper Scissors
+def rpsCompare(userChoice, bot_choice):
+    global rps_tie
+    print(bot + bot_choice)
+    time.sleep(1)
+    print("you chose " +userChoice)
+    #For invalid input
+    if userChoice.lower() not in rps_answers:
+        print("Sorry your choice was invalid")
+        rps_tie = True
+    #For a tied result
+    if userChoice == bot_choice:
+        print(bot +"It's a tie, please try again")
+        rps_tie = True
+        return
+    
+    elif userChoice.lower() == "rock":
+        if bot_choice == "scissors":
+            print(bot +"You won! well done :)")
+            rps_tie = False
+            return
+        else:
+            print(bot +"Sorry :( you lost!")
+            rps_tie = False
+            return
+
+    elif userChoice.lower() == "paper":
+        if bot_choice == "rock":
+            print(bot +"You won! well done :)")
+            rps_tie = False
+            return
+        else:
+            print(bot +"Sorry :( you lost!")
+            rps_tie = False
+            return
+
+    elif userChoice.lower() == "scissors":
+        if bot_choice == "rock":
+            print(bot +"Sorry :( you lost!!")
+            rps_tie = False
+            return
+        else:
+            print(bot +"You won! well done :)")
+            rps_tie = False
+            return
+
+    
+
+def rockPaperScissors(userChoice):
+    
+    bot_choice = random.randint(1,3)
+    if bot_choice == 1: bot_choice = "rock"
+    elif bot_choice == 2: bot_choice = "paper"
+    else: bot_choice = "scissors"
+    if rps_tie == False:
+        botLine("Good choice! :) I love Rock Paper Scissors. Ready when you are!", False)
+        userChoice = response
+    rpsCompare(userChoice, bot_choice)
+
+def isTie():
+    while rps_tie == True:
+        botLine("Choose again 3... 2... 1...", False)
+        userChoice = response
+        if rps_tie == True:
+            rockPaperScissors(userChoice)
+        if rps_tie == False:
+            return
+
+##Handle game choice
+def otherGame():
+    while True:
+        print("Sorry my creator got lazy and or ran out of time and didn't make any other games")
+
+def chooseGame(userChoice):
+    userChoiceWords = userChoice.split(" ")
+    for word in userChoiceWords:
+        if word.lower() in games[0]:
+            rockPaperScissors(userChoice)
+        elif word.lower() in games[1]:
+            otherGame()
+
+
+#----------------------------------------------------------------------------
+####BEGIN PROGRAM/CHATBOT CONVERSATION
+#Ask users name and respond greeting them
+botLine("Hello I am STUPIDBOT, what is your name? ", False)
 processInput(response, random_greeting, True)
 
-
-
-#second step of conversation
-
-print(bot + random_question)
-greeting_response = raw_input(" ")
+#Ask user a random question i.e how they are
+botLine(random_question, True)
 posOrNeg(greeting_response, pos_responses, neg_responses)
 
+#Ask about Hobbies
+botLine("do you have any hobbies? what are they ? ", False)
+user_hobbies.append(response)
+random_hobby = random.choice(user_hobbies)
+processInput(response, random_response, False)
+print(bot + "I love playing games...")
+time.sleep(1)
 
-# ask why then work in further respons to cheer up if negative, tell joke, show picture, offer figurative hug?
-#sort out if not_something combination -- = + etc
-
-#tell me about yourself, ask questions about appearance, then eventually hobbies - set responses + wikipedia?
-
-#do a word game here?
+#Play game with user
+while skip_game == False:
+    botLine("Would you Like to play a game?", False)
+    checkYesNo(response, pos_responses, neg_responses, nofunction, True)
+    if skip_game == True: break 
+    botLine("What would you like to play? I know: " +gameString, False)
+    chooseGame(response)
+    isTie()
+    botLine("Would you like to play another game?", False)
+    checkYesNo(response, pos_responses, neg_responses, nofunction, True)
+    if skip_game == True: break 
+    botLine("What would you like to play? remember I know: " +gameString, False)
+    chooseGame(response)
 
 #last step of conversation - endless wikipedia nonsense
 while True:
-    response = raw_input("What would you like to talk about now? ")
+    #Ask user for subject
+    botLine("What would you like to talk about now? ", False)
+    #get Last word from user input
     response_last = response.split(' ', -1)[-1]
-    parse = None
+
+        
+    #Set parse to none by default -as only want to use html.parser for certain queries
     userSearch = wikipedia.search(response_last, parse)
-    
+        
     #Below fixes issue with ambiguous query's
-    #Might get occasional warning... still works. Please ignor warning
+    #Might get occasional warning... still works. Please ignore warning
+        
     try:
-        userSubject = wikipedia.summary(userSearch[1], sentences=1)
+        userSubject = wikipedia.summary(userSearch[wiki_index], sentences=1)
     except:
         parse = "html.parser"
         userSubject = wikipedia.summary(userSearch[0], sentences=1)
-    
-    print("do you mean? : ")
-    print(bot + userSubject)
-    response = raw_input(" ")
-    checkYesNo(response, pos_responses, neg_responses)
-    
-    #response = raw_input("Would you like to talk about something else? ")
-    #if response in (neg_responses):  break
+
+    botLine("do you mean? : \n" + userSubject, False)
+    checkYesNo(response, pos_responses, neg_responses, moreWiki, False)
+        
+    botLine("Would you like to talk about anything else ?", False)
+    contOrStop(response, pos_responses, neg_responses)
 
 
 
