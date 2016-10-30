@@ -1,6 +1,15 @@
 #Chat Bot
 '''features:
-    
+    *simple interaction getting input and giving it back
+    *stores certain user input for later use - see goodbye message when choosing not to continue talking after wikipedia bit
+    *random questions from list so isn't same each time
+    *using functions to trim down on repeated code
+    *even passing a function into a function incase i wanted to re-use parent function but do something different if conditionds within are met
+    *evaluates positive or negative responses and responds appropriately - including not bad/not good complications
+    *Plays a simple game with user - including checkign if user wants to play or play again etc
+    *If input is invalid resets to a previous step using booleans - was a bit messy but works... mostly
+    *on wiki ambiguous search errors - switches to another index - for some words this will throw up an html.parse warning... but still works.
+    *program terminates after final line of dialogue
 '''
 
 #Import libraries 
@@ -57,6 +66,7 @@ global rps_tie
 rps_tie = False
 global skip_game
 skip_game = False
+global neitherYesNo
 user_hobbies = []
 
 
@@ -128,7 +138,7 @@ def contOrStop(checkInput, pos, neg):
 
 #Check respons to if subject is correct - could be used for something else
 def checkYesNo(checkInput, pos, neg, chosenFunction, game):
-    global wiki_index, skip_game
+    global wiki_index, skip_game, neitherYesNo
     response = checkInput.split(" ")
     for word in response:
         if word.lower() in pos:
@@ -139,6 +149,9 @@ def checkYesNo(checkInput, pos, neg, chosenFunction, game):
             if game == True:
                 skip_game = True
             print("Ok then")
+        elif word.lower() not in neg and word.lower() not in pos:
+            print("invalid response, please try again")
+            neitherYesNo = True
 
 #Function that does nothing
 def nofunction():
@@ -166,30 +179,36 @@ def rpsCompare(userChoice, bot_choice):
         if bot_choice == "scissors":
             print(bot +"You won! well done :)")
             rps_tie = False
+            neitherYesNo = False
             return
         else:
             print(bot +"Sorry :( you lost!")
             rps_tie = False
+            neitherYesNo = False
             return
 
     elif userChoice.lower() == "paper":
         if bot_choice == "rock":
             print(bot +"You won! well done :)")
             rps_tie = False
+            neitherYesNo = False
             return
         else:
             print(bot +"Sorry :( you lost!")
             rps_tie = False
+            neitherYesNo = False
             return
 
     elif userChoice.lower() == "scissors":
         if bot_choice == "rock":
             print(bot +"Sorry :( you lost!!")
             rps_tie = False
+            neitherYesNo = False
             return
         else:
             print(bot +"You won! well done :)")
             rps_tie = False
+            neitherYesNo = False
             return
 
     
@@ -226,6 +245,9 @@ def chooseGame(userChoice):
             rockPaperScissors(userChoice)
         elif word.lower() in games[1]:
             otherGame()
+        elif word.lower() not in games:
+            print("invalid response, please try again")
+            neitherYesNo = True
 
 
 #----------------------------------------------------------------------------
@@ -248,17 +270,19 @@ time.sleep(1)
 
 #Play game with user
 while skip_game == False:
+    neitherYesNo = False
     botLine("Would you Like to play a game?", False)
     checkYesNo(response, pos_responses, neg_responses, nofunction, True)
-    if skip_game == True: break 
-    botLine("What would you like to play? I know: " +gameString, False)
-    chooseGame(response)
-    isTie()
-    botLine("Would you like to play another game?", False)
-    checkYesNo(response, pos_responses, neg_responses, nofunction, True)
-    if skip_game == True: break 
-    botLine("What would you like to play? remember I know: " +gameString, False)
-    chooseGame(response)
+    if skip_game == True: break
+    if neitherYesNo == False:
+        botLine("What would you like to play? I know: " +gameString, False)
+        chooseGame(response)
+        isTie()
+        botLine("Would you like to play another game?", False)
+        checkYesNo(response, pos_responses, neg_responses, nofunction, True)
+        if skip_game == True: break 
+        botLine("What would you like to play? remember I know: " +gameString, False)
+        chooseGame(response)
 
 #last step of conversation - endless wikipedia nonsense
 while True:
