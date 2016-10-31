@@ -1,4 +1,5 @@
 #visualisation using external values
+#PLEASE NOTE: movement speed variables may need to be adjusted - increased(i think) for mac
 #I HAVE INCLUDED VIDEO IN GITHUB REPOS (pcVis.mp4) PROVING PC ANIMATION WORKS
 #for mac run visualisation 1 by pressing '1' key on keyboard
 '''On a good PC press '2' key on keyboard for second visualisation.
