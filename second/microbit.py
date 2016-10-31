@@ -4,11 +4,14 @@ from microbit import uart
 while(True):
     if(uart.any()):
         input = uart.read(1)
-        print("Got " + str(input))
+        print("Got " + str(input))#was for debugging
+        #if first character from input(message) is '1' set light to 9 brightest
+        #otherwise if anything else (including '0') set lite to 0 - effectively off
         if(chr(input[0]) == '1'): light = 9
         else: light = 0
+        #turn on microbit display
         microbit.display.on()
-        #Displays Heart when recieving message ON
+        #Displays Heart when recieving message ON - using variable light in place of manual setting
         microbit.display.set_pixel(1,0,light)
         microbit.display.set_pixel(3,0,light)
         microbit.display.set_pixel(0,1,light)
